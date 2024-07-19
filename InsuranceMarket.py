@@ -20,6 +20,27 @@ IM['Started']=pd.to_datetime(IM['Started'],dayfirst=True)
 IM['Expired']=pd.to_datetime(IM['Expired'],dayfirst=True)
 IM.head(5)
 IM['Year']=IM['Started'].dt.year
+month_levels = pd.Series([
+  "January", "February", "March", "April", "May", "June", 
+  "July", "August", "September", "October", "November", "December"
+])
+
+IM['Month']=IM['Started'].dt.month_name()
+
+IM['Month'] = pd.Categorical(IM['Month'], categories=month_levels)
+IM['Year'] = pd.Categorical(IM['Year'])
+IM['Month_Year']=IM["Started"].dt.strftime('%m-%Y')
+def gender_groups(Gender):
+    if Gender==1:
+        return "Άνδρας"
+    elif Gender==2:
+        return "Γυναίκα"
+    elif Gender==3:
+        return "Συνιδιοκτισία"
+    elif Gender==5:
+        return "Νομικό πρόσωπο"
+
+IM['Gender'] = IM['Gender'].apply(gender_groups)
 
 year_filter=st.selectbox('Έτος', [2020,2021,2022,2023])
 IM1=IM[IM["Year"]==year_filter]
@@ -34,7 +55,7 @@ kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
 kpi4.metric(label="Προμήθειες💶",
         value=IM['Commissions'].sum().round(2))
 
-tab1, tab2, tab3, tab4 = st.tabs(["Παραγωγή ανά εταιρεια","Παραγωγή ανά κλάδο", "Mega", "Δημογραφικά"])
+tab1, tab2, tab3, tab4 = st.tabs(["Παραγωγή ανά εταιρεια","Παραγωγή ανά κλάδο", "Εξέλιξη Παραγωγής", "Δημογραφικά"])
 with tab1:
     tab11, tab12, tab13 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
    
@@ -91,6 +112,59 @@ with tab2:
         fig_barplot.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
         fig_barplot.update_layout(plot_bgcolor='white',font_size=15)
         st.write(fig_barplot)
+with tab3:
+    prod_line_by_year=IM.groupby('Month_Year')[['Commissions',"Net"]].sum().reset_index()
+    prod_line_by_year['Month_Year']=pd.to_datetime(prod_line_by_year['Month_Year'],format='mixed')
+    prod_line_by_year=prod_line_by_year.sort_values('Month_Year',ascending=False)
+    prod_line_by_year_count=IM['Month_Year'].value_counts().reset_index()
+    prod_line_by_year_count['Month_Year']=pd.to_datetime(prod_line_by_year_count['Month_Year'],format='mixed')
+    prod_line_by_year_count=prod_line_by_year_count.sort_values('Month_Year',ascending=False)
+    tab31, tab32, tab33 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
+    with tab31:
+        fig_line_polcou = px.line(prod_line_by_year_count, 
+                        x="Month_Year", y="count", 
+                        title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'Σύνολο συμβολαίων','Month_Year':'Μήνας-Έτος'},
+                        range_y=[0,600],markers=True)
+        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
+        st.write(fig_line_polcou)
+    with tab32:
+        fig_line_net = px.line(prod_line_by_year, 
+                        x="Month_Year", y="Net", 
+                        title='Κάθαρα Ασφάλιστρα ανά μήνα απο το 2020 έως 2023',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'Net':'Καθαρά €','Month_Year':'Μήνας-Έτος'},
+                        range_y=[0,35000],markers=True)
+        fig_line_net.update_layout(plot_bgcolor='white',font_size=13)
+        st.write(fig_line_net)
+    with tab33:
+        fig_line_com = px.line(prod_line_by_year, 
+                        x="Month_Year", y="Commissions", 
+                        title='Προμήθειες ανά μήνα απο το 2020 έως 2023',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'Commissions':'Προμήθειες €','Month_Year':'Μήνας-Έτος'},
+                        range_y=[0,3500],markers=True)
+        fig_line_com.update_layout(plot_bgcolor='white',font_size=13)
+        st.write(fig_line_com)        
+        
+with tab4:
+    gender_data=IM.groupby(['id','Gender'])[['Gross','Net','Commissions']].sum().reset_index()
+    gender_data=gender_data[gender_data['Gender']!='Συνιδιοκτισία']
+    gendercount=gender_data['Gender'].value_counts().reset_index()
+    fig_pie=px.pie(gendercount,values='count',names='Gender', color='Gender',
+               color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'count':'Σύνολο',
+                                                                 'Gender':'Φύλο'}, 
+               height=400,
+               title='Ποσόστό φύλων',hole=0.5)
+    fig_pie.update_traces(hoverinfo="value",textfont_size=17)
+    fig_pie.update_layout(plot_bgcolor='white',font_size=20,legend=dict(
+        yanchor="top",
+        y=0.80,
+        xanchor="left",
+        x=0.25
+    ),legend_title_text='Φύλο',title_x=0.4)
+    st.write(fig_pie)
+    st.write("""* Σε αρκετα συμβόλαια δεν αναγραφόταν το φύλο του πελάτη. Επίσης, σε κάποια συμβόλαια υπάρχει συνιδιοκτησία""")
 
 
-      
