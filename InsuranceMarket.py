@@ -192,6 +192,7 @@ with tab3:
         st.write(fig_line_com)        
         
 with tab4:
+    st.write("# Φύλο πελατών")
     gender_data=IM.groupby(['id','Gender'])[['Gross','Net','Commissions']].sum().reset_index()
     gender_data=gender_data[gender_data['Gender']!='Συνιδιοκτισία']
     gendercount=gender_data['Gender'].value_counts().reset_index()
@@ -209,6 +210,7 @@ with tab4:
     ),legend_title_text='Φύλο',title_x=0.4)
     st.write(fig_pie)
     st.write("""* Σε αρκετα συμβόλαια δεν αναγραφόταν το φύλο του πελάτη. Επίσης, σε κάποια συμβόλαια υπάρχει συνιδιοκτησία""")
+    st.write("# Νομός")
     IM['District']=IM['District'].replace("ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
     discrict_data=IM.groupby(['id','District'])[['Gross','Net','Commissions']].sum().reset_index()
     discrict_data_total=IM.groupby(['District'])[['Gross','Net','Commissions']].sum().reset_index()
@@ -239,3 +241,6 @@ with tab4:
         fig_barplot_reg.update_layout(plot_bgcolor='white',font_size=25)
         fig_barplot.update_xaxes(tickprefix="€")
         st.write(fig_barplot_reg)
+
+
+
