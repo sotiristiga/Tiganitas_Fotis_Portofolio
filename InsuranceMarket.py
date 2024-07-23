@@ -11,6 +11,7 @@ from datetime import date
 from streamlit_dynamic_filters import DynamicFilters
 
 
+
 st.set_page_config(layout='wide',page_title="Insurance Market")
 IM_2020= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2020.csv")
 IM_2021= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2021.csv")
