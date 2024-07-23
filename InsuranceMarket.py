@@ -9,6 +9,7 @@ import streamlit as st
 
 
 
+
 st.set_page_config(layout='wide',page_title="Insurance Market")
 IM_2020= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2020.csv")
 IM_2021= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2021.csv")
