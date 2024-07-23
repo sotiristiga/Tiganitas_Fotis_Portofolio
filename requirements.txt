@@ -5,3 +5,4 @@ pandas
 numpy
 matplotlib
 openpyxl
+streamlit-dynamic-filters
