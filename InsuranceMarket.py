@@ -6,6 +6,8 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+from math import ceil
+from datetime import date
 
 
 st.set_page_config(layout='wide',page_title="Insurance Market")
@@ -18,7 +20,13 @@ IM_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingappp
 IM=pd.concat([IM_2020,IM_2021,IM_2022,IM_2023])
 IM['Started']=pd.to_datetime(IM['Started'],dayfirst=True)
 IM['Expired']=pd.to_datetime(IM['Expired'],dayfirst=True)
-IM.head(5)
+
+IM['Year']=IM['Started'].dt.year
+month_levels = pd.Series([
+  "January", "February", "March", "April", "May", "June", 
+  "July", "August", "September", "October", "November", "December"
+])
+
 IM['Year']=IM['Started'].dt.year
 month_levels = pd.Series([
   "January", "February", "March", "April", "May", "June", 
@@ -39,9 +47,26 @@ def gender_groups(Gender):
         return "Συνιδιοκτισία"
     elif Gender==5:
         return "Νομικό πρόσωπο"
+    
+def duration_groups(duration):
+    if duration==1:
+        return "Μηνιαίο"
+    elif duration==3:
+        return "Τρίμηνο"
+    elif duration==6:
+        return "Εξάμηνο"
+    elif duration==12:
+        return "Ετήσιο"
+    else:
+        return "Άλλη"
+
 
 IM['Gender'] = IM['Gender'].apply(gender_groups)
+IM['Duration']=((IM['Expired'].dt.year-IM['Started'].dt.year)*12 +IM['Expired'].dt.month-IM['Started'].dt.month+IM['Expired'].dt.day/30-IM['Started'].dt.day/30).round(0)
+IM['Duration_gr']=IM['Duration'].apply(duration_groups)
+duration_levels = pd.Series(["Ετήσιο","Εξάμηνο","Τρίμηνο","Μηνιαίο","Άλλη"])
 
+IM['Duration_gr'] = pd.Categorical(IM['Duration_gr'], categories=duration_levels)
 year_filter=st.selectbox('Έτος', [2020,2021,2022,2023])
 IM1=IM[IM["Year"]==year_filter]
 
@@ -55,7 +80,7 @@ kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
 kpi4.metric(label="Προμήθειες💶",
         value=IM['Commissions'].sum().round(2))
 
-tab1, tab2, tab3, tab4 = st.tabs(["Παραγωγή ανά εταιρεια","Παραγωγή ανά κλάδο", "Εξέλιξη Παραγωγής", "Δημογραφικά Πελατών"])
+tab1, tab2, tab3, tab4,tab5 = st.tabs(["Παραγωγή ανά εταιρεια","Παραγωγή ανά κλάδο", "Εξέλιξη Παραγωγής", "Δημογραφικά Πελατών",'Διάρκειες Συμβολαίων'])
 with tab1:
     tab11, tab12, tab13 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
     with tab11:
@@ -241,5 +266,36 @@ with tab4:
         fig_barplot_reg.update_layout(plot_bgcolor='white',font_size=25)
         fig_barplot.update_xaxes(tickprefix="€")
         st.write(fig_barplot_reg)
+with tab5:
+    select_durations=IM.loc[(IM['Duration']==1)|(IM['Duration']==3)|(IM['Duration']==6)|(IM['Duration']==12)]
+    select_duration_total_year=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Year',"Duration_gr"])['count'].sum().round(1).reset_index()
+    fig_dur_bar = px.bar(select_duration_total_year.loc[select_duration_total_year['Duration_gr']!="Άλλη"], 
+                        x="Year", y="count", 
+                        title='Χρονικές διάρκειες συμβολαίων ανά έτος (Συνολικά)',color='Duration_gr',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'# Συμβολαίων','Year':'Έτος',"Duration_gr":'Διάρκεια συμβολαίου'},
+                        range_y=[0,8000],width=700,text='count')
+    fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+    st.write(fig_dur_bar)
 
-
+    select_durations=IM.loc[(IM['Duration']==1)|(IM['Duration']==3)|(IM['Duration']==6)|(IM['Duration']==12)]
+    select_duration_total=select_durations[['Duration_gr','Month']].value_counts().reset_index().sort_values(['Duration_gr','Month'])
+    fig_dur_bar = px.bar(select_duration_total, 
+                        x="Month", y="count", 
+                        title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Συνολικά)',color='Duration_gr',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
+                        range_y=[0,2000],width=1000,text='count')
+    fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+    st.write(fig_dur_bar)
+    select_duration_mean=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Month',"Duration_gr"])['count'].mean().round(1).reset_index()
+    fig_dur_bar = px.line(select_duration_mean.loc[select_duration_mean['Duration_gr']!="Άλλη"], 
+                        x="Month", y="count", 
+                        title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Μέσος όρος)',color='Duration_gr',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
+                        range_y=[0,250],width=1000,height=500)
+    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+    st.write(fig_dur_bar)
