@@ -10,14 +10,12 @@ from math import ceil
 from datetime import date
 from streamlit_dynamic_filters import DynamicFilters
 
-
-
-
 st.set_page_config(layout='wide',page_title="Insurance Market")
-IM_2020= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2020.csv")
-IM_2021= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2021.csv")
-IM_2022= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2022.csv")
-IM_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Testingapppanc/main/IM_2023.csv")
+
+IM_2020= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/IM_2020.csv")
+IM_2021= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/IM_2021.csv")
+IM_2022= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/IM_2022.csv")
+IM_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/IM_2023.csv")
 
 
 IM=pd.concat([IM_2020,IM_2021,IM_2022,IM_2023])
@@ -39,9 +37,11 @@ month_levels = pd.Series([
 IM['Month']=IM['Started'].dt.month_name()
 
 IM['Month'] = pd.Categorical(IM['Month'], categories=month_levels)
+
 IM['Year'] = pd.Categorical(IM['Year'])
 IM['Month_Year']=IM["Started"].dt.strftime('%m-%Y')
 IM['District']=IM['District'].replace("ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
+
 def gender_groups(Gender):
     if Gender==1:
         return "Άνδρας"
@@ -63,18 +63,18 @@ def duration_groups(duration):
         return "Ετήσιο"
     else:
         return "Άλλη"
-
 IM['Gender'] = IM['Gender'].apply(gender_groups)
 IM['Duration']=((IM['Expired'].dt.year-IM['Started'].dt.year)*12 +IM['Expired'].dt.month-IM['Started'].dt.month+IM['Expired'].dt.day/30-IM['Started'].dt.day/30).round(0)
 IM['Duration_gr']=IM['Duration'].apply(duration_groups)
 duration_levels = pd.Series(["Ετήσιο","Εξάμηνο","Τρίμηνο","Μηνιαίο","Άλλη"])
 IM['Duration_gr'] = pd.Categorical(IM['Duration_gr'], categories=duration_levels)
 
-dynamic_filters = DynamicFilters(IM, filters=['Year', 'Month'])
+dynamic_filters = DynamicFilters(IM, filters=['Year','Month'])
+
 with st.sidebar:
     dynamic_filters.display_filters()
 
-dynamic_filters.filter_df()
+
 IM1=dynamic_filters.filter_df()
 
 kpi1, kpi2, kpi3,kpi4 = st.columns(4)
@@ -330,7 +330,6 @@ with tab5:
                         width=1000,height=500,markers=True)
     fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
     st.write(fig_dur_bar)
-
 
 
 
