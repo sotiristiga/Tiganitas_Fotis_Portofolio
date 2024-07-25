@@ -7,7 +7,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from streamlit_dynamic_filters import DynamicFilters
-
+st.set_page_config(layout='wide',page_title="Megabroker")
 ME_2015_2016= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2015_2016.csv")
 ME_2017= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2017.csv")
 ME_2018= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2018.csv")
@@ -260,7 +260,8 @@ with tab4:
         fig_barplot_reg.update_traces(textfont_size=14,texttemplate = '%{text:.3s} €', textangle=0.5, textposition="outside", cliponaxis=False)
         fig_barplot_reg.update_layout(plot_bgcolor='white',font_size=25)
         fig_barplot.update_xaxes(tickprefix="€")
-        st.write(fig_barplot_reg)    
+        st.write(fig_barplot_reg)  
+      
 with tab5:
     select_durations=ME1.loc[(ME1['Duration']==1)|(ME1['Duration']==3)|(ME1['Duration']==6)|(ME1['Duration']==12)]
     select_duration_total_year=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Year',"Duration_gr"])['count'].sum().round(1).reset_index()
