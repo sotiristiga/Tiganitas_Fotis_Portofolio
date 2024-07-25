@@ -50,6 +50,8 @@ ME['Duration']=((ME['Expired'].dt.year-ME['Started'].dt.year)*12 +ME['Expired'].
 ME['Duration_gr']=ME['Duration'].apply(duration_groups)
 duration_levels = pd.Series(["Ετήσιο","Εξάμηνο","Τρίμηνο","Μηνιαίο","Άλλη"])
 ME['Duration_gr'] = pd.Categorical(ME['Duration_gr'], categories=duration_levels)
+ME['District']=ME['District'].replace("ΑΙΤΩΛΟΚΑΡΝΑΝΙΑ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
+
 
 dynamic_filters = DynamicFilters(ME, filters=['Year','Month'])
 
