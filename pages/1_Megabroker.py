@@ -75,7 +75,7 @@ with tab1:
     tab11, tab12, tab13 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
     with tab11:
         companies_countpol=ME1['Company'].value_counts().reset_index()
-        fig_barplot=px.bar(companies_countpol,x='count',y='Company',title='',
+        fig_barplot=px.bar(companies_countpol.sort_values("count"),x='count',y='Company',title='',
                            labels={'count':'Σύνολο Συμβολαίων','Company':'Ασφ. Εταιρεία'},
                         color_discrete_sequence= px.colors.sequential.Blugrn,text_auto=True,
                         height=1000)
@@ -108,7 +108,7 @@ with tab2:
     tab21, tab22, tab23 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
     with tab21:
         categories_countpol=ME1['Category'].value_counts().reset_index()
-        fig_barplot=px.bar(categories_countpol,x='count',y='Category',title='',
+        fig_barplot=px.bar(categories_countpol.sort_values("count"),x='count',y='Category',title='',
                            labels={'count':'Σύνολο Συμβολαίων','Category':'Κλάδος'},
                         color_discrete_sequence= px.colors.sequential.Blugrn,
                         text_auto=True)
@@ -228,4 +228,70 @@ with tab3:
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'Commissions':'Προμήθειες €','Month':'Μήνας'},markers=True)
         fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_polcou)                
+        st.write(fig_line_polcou)   
+with tab4:
+    st.write("# Νομός")
+    
+    discrict_data=ME1.groupby(['id','District'])[['Gross','Net','Commissions']].sum().reset_index()
+    discrict_data_total=ME1.groupby(['District'])[['Gross','Net','Commissions']].sum().reset_index()
+    discrictcount=discrict_data['District'].value_counts().reset_index().sort_values('count')
+    tab41, tab42, tab43 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
+    with tab41:
+        fig_barplot_reg=px.bar(discrictcount,x='count',y='District',title='',
+                           labels={'count':'Αρ. Πελατών','District':'Νομός'},
+                        color_discrete_sequence= px.colors.sequential.Blugrn,
+                        text_auto=True,width=1200,height=1200)
+        fig_barplot_reg.update_traces(textfont_size=14, textangle=0.5, textposition="outside", cliponaxis=False)
+        fig_barplot_reg.update_layout(plot_bgcolor='white',font_size=25)
+        st.write(fig_barplot_reg)
+    with tab42:
+        fig_barplot_reg=px.bar(discrict_data_total.sort_values('Net'),x='Net',y='District',title='',
+                           labels={'Net':'Καθαρά €','District':'Νομός'},
+                        color_discrete_sequence= px.colors.sequential.Blugrn,text='Net',width=1000,
+                        height=1200)
+        fig_barplot_reg.update_traces(textfont_size=14,texttemplate = '%{text:.2s} €', textangle=0.5, textposition="outside", cliponaxis=False)
+        fig_barplot_reg.update_layout(plot_bgcolor='white',font_size=25)
+        st.write(fig_barplot_reg)
+    with tab43:
+        fig_barplot_reg=px.bar(discrict_data_total.sort_values('Commissions'),x='Commissions',y='District',title='',
+                           labels={'Commissions':'Προμήθειες €','District':'Νομός'},
+                        color_discrete_sequence= px.colors.sequential.Blugrn,text='Commissions',
+                        width=1200,height=1200)
+        fig_barplot_reg.update_traces(textfont_size=14,texttemplate = '%{text:.3s} €', textangle=0.5, textposition="outside", cliponaxis=False)
+        fig_barplot_reg.update_layout(plot_bgcolor='white',font_size=25)
+        fig_barplot.update_xaxes(tickprefix="€")
+        st.write(fig_barplot_reg)    
+with tab5:
+    select_durations=ME1.loc[(ME1['Duration']==1)|(ME1['Duration']==3)|(ME1['Duration']==6)|(ME1['Duration']==12)]
+    select_duration_total_year=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Year',"Duration_gr"])['count'].sum().round(1).reset_index()
+    fig_dur_bar = px.bar(select_duration_total_year.loc[select_duration_total_year['Duration_gr']!="Άλλη"], 
+                        x="Year", y="count", 
+                        title='Χρονικές διάρκειες συμβολαίων ανά έτος (Συνολικά)',color='Duration_gr',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'# Συμβολαίων','Year':'Έτος',"Duration_gr":'Διάρκεια συμβολαίου'},
+                        width=700,text='count',height=800)
+    fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+    st.write(fig_dur_bar)
+
+    select_durations=ME1.loc[(ME1['Duration']==1)|(ME1['Duration']==3)|(ME1['Duration']==6)|(ME1['Duration']==12)]
+    select_duration_total=select_durations[['Duration_gr','Month']].value_counts().reset_index().sort_values(['Duration_gr','Month'])
+    fig_dur_bar = px.bar(select_duration_total, 
+                        x="Month", y="count", 
+                        title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Συνολικά)',color='Duration_gr',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
+                        width=1000,text='count')
+    fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+    st.write(fig_dur_bar)
+    select_duration_mean=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Month',"Duration_gr"])['count'].mean().round(1).reset_index()
+    fig_dur_bar = px.line(select_duration_mean.loc[select_duration_mean['Duration_gr']!="Άλλη"], 
+                        x="Month", y="count", 
+                        title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Μέσος όρος)',color='Duration_gr',
+                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                        labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
+                        width=1000,height=1000,markers=True)
+    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+    st.write(fig_dur_bar)
+
