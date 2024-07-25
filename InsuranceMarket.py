@@ -28,11 +28,7 @@ month_levels = pd.Series([
   "July", "August", "September", "October", "November", "December"
 ])
 
-IM['Year']=IM['Started'].dt.year
-month_levels = pd.Series([
-  "January", "February", "March", "April", "May", "June", 
-  "July", "August", "September", "October", "November", "December"
-])
+
 
 IM['Month']=IM['Started'].dt.month_name()
 
@@ -41,7 +37,7 @@ IM['Month'] = pd.Categorical(IM['Month'], categories=month_levels)
 IM['Year'] = pd.Categorical(IM['Year'])
 IM['Month_Year']=IM["Started"].dt.strftime('%m-%Y')
 IM['District']=IM['District'].replace("ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
-
+IM['District']=IM['District'].replace("ΔΩΔΕΚΑΝΗΣΟΥ","ΔΩΔΕΚΑΝΗΣΩΝ")
 def gender_groups(Gender):
     if Gender==1:
         return "Άνδρας"
@@ -327,9 +323,6 @@ with tab5:
                         title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Μέσος όρος)',color='Duration_gr',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
-                        width=1000,height=500,markers=True)
+                        width=1000,height=1000,markers=True)
     fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
     st.write(fig_dur_bar)
-
-
-
