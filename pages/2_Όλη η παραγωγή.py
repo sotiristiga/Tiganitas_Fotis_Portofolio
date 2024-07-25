@@ -25,6 +25,8 @@ IM_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_F
 IM=pd.concat([IM_2020,IM_2021,IM_2022,IM_2023])
 IM['Platform']="Insurance Market"
 ME['Platform']="Megabroker"
+ME['District']=ME['District'].replace("ΑΙΤΩΛΟΚΑΡΝΑΝΙΑ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
+IM['District']=IM['District'].replace("ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
 IM_select=IM[['N_Policy', 'Company', 'Category', 'Char', 'Started', 'Expired','District', 'City', 'Gross', 'Net', 'Commissions', 'id','Platform']]
 
 All=pd.concat([ME,IM_select])
