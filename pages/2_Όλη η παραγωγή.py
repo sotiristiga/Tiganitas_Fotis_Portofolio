@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from streamlit_dynamic_filters import DynamicFilters
 
-st.set_page_config(layout='wide',page_title="Όλη η παραγωγή")
+st.set_page_config(layout='wide',page_title="Insurance Market")
 ME_2015_2016= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2015_2016.csv")
 ME_2017= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2017.csv")
 ME_2018= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2018.csv")
@@ -26,11 +26,17 @@ IM=pd.concat([IM_2020,IM_2021,IM_2022,IM_2023])
 IM['Platform']="Insurance Market"
 ME['Platform']="Megabroker"
 ME['District']=ME['District'].replace("ΑΙΤΩΛΟΚΑΡΝΑΝΙΑ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
+ME['District']=ME['District'].replace("ΑΤΤΙΚΗ","ΑΤΤΙΚΗΣ")
+ME['District']=ME['District'].replace("ΑΧΑΪΑΣ","ΑΧΑΙΑΣ")
+ME['District']=ME['District'].replace("ΚΟΡΙΝΘΟΥ","ΚΟΡΙΝΘΙΑΣ")
+ME['District']=ME['District'].replace("ΛΑΡΙΣΗΣ","ΛΑΡΙΣΑΣ")
 IM['District']=IM['District'].replace("ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
+IM['District']=IM['District'].replace("ΔΩΔΕΚΑΝΗΣΟΥ","ΔΩΔΕΚΑΝΗΣΩΝ")
+ME['District']=ME['District'].replace("ΠΕΛΛΑΣ","ΠΕΛΛΗΣ")
 IM_select=IM[['N_Policy', 'Company', 'Category', 'Char', 'Started', 'Expired','District', 'City', 'Gross', 'Net', 'Commissions', 'id','Platform']]
 
 All=pd.concat([ME,IM_select])
-
+All['District'].value_counts().reset_index().sort_values('District')
 All['Started']=pd.to_datetime(All['Started'],dayfirst=True)
 All['Expired']=pd.to_datetime(All['Expired'],dayfirst=True)
 
@@ -400,4 +406,3 @@ with tab5:
                         width=1000,height=1000,markers=True)
     fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
     st.write(fig_dur_bar)
-
