@@ -79,6 +79,7 @@ All1=dynamic_filters.filter_df()
 kpi1, kpi2, kpi3,kpi4 = st.columns(4)
 kpi1.metric(label="Πελάτες 👩👨",
         value=All1['id'].nunique())
+
 kpi2.metric(label="Συμβόλαια📑",
         value=All1['N_Policy'].nunique())
 kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
@@ -86,6 +87,52 @@ kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
 kpi4.metric(label="Προμήθειες💶",
         value=All1['Commissions'].sum().round(2))
 
+pie1, pie2, pie3,pie4 = st.columns(4)
+with pie1:
+    pie1=px.pie(All1[['N_Policy','Platform']].value_counts().reset_index().groupby('Platform').count().reset_index(),
+        values='count',names='Platform', color='Platform',
+        color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'count':'Σύνολο',
+                                                            'Platform':'Πλατφόρμα'}, 
+        height=350,
+        title='Πελάτες<br>(ανά πλατφόρμα)',hole=0.5,width=150)
+    pie1.update_traces(hoverinfo="value",textfont_size=17)
+    pie1.update_layout(plot_bgcolor='white',font_size=20,
+                       legend=dict(yanchor="top",y=0.04,xanchor="left",x=0.00005),legend_title_text='Φύλο',title_x=0.1,title_y=0.8)
+    st.write(pie1)
+
+with pie2:
+    pie2=px.pie(All1[['id','Platform']].value_counts().reset_index().groupby('Platform').count().reset_index(),
+        values='count',names='Platform', color='Platform',
+        color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'count':'Σύνολο',
+                                                            'Platform':'Πλατφόρμα'}, 
+        height=350,
+        title='Συμβόλαια<br>(ανά πλατφόρμα)',hole=0.5,width=150)
+    pie2.update_traces(hoverinfo="value",textfont_size=17)
+    pie2.update_layout(plot_bgcolor='white',font_size=20,showlegend=False,title_y=0.8)
+    st.write(pie2)
+
+with pie3:
+    pie3=px.pie(All.groupby('Platform')['Net'].sum().reset_index(),
+        values='Net',names='Platform', color='Platform',
+        color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'Net':'Καθαρά ασφάλιστρα',
+                                                            'Platform':'Πλατφόρμα'}, 
+        height=350,
+        title='Καθαρά<br>ασφάλιστρα <br>(ανά πλατφόρμα)',hole=0.5,width=150)
+    pie3.update_traces(hoverinfo="value",textfont_size=17)
+    pie3.update_layout(plot_bgcolor='white',font_size=20,
+                       showlegend=False,title_x=0.1,title_y=0.85)
+    st.write(pie3)
+
+with pie4:
+    pie4=px.pie(All.groupby('Platform')['Commissions'].sum().reset_index(),
+        values='Commissions',names='Platform', color='Platform',
+        color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'Commissions':'Προμήθειες',
+                                                            'Platform':'Πλατφόρμα'}, 
+        height=350,
+        title='Προμήθειες<br>(ανά πλατφόρμα)',hole=0.5,width=150)
+    pie4.update_traces(hoverinfo="value",textfont_size=17)
+    pie4.update_layout(plot_bgcolor='white',font_size=20,showlegend=False,title_x=0.1,title_y=0.8)
+    st.write(pie4)
 
 
 tab1, tab2, tab3, tab4,tab5 = st.tabs(["Παραγωγή ανά εταιρεια","Παραγωγή ανά κλάδο", "Εξέλιξη Παραγωγής", "Δημογραφικά Πελατών",'Διάρκειες Συμβολαίων'])
