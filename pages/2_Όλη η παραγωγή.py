@@ -266,84 +266,197 @@ with tab3:
     prod_line_by_year_count['Year']=pd.Categorical(prod_line_by_year_count['Year'],pd.Series([2020,2021,2022,2023]))
     tab31, tab32, tab33 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
     with tab31:
-        fig_line_polcou = px.bar(prod_line_by_year_count, 
-                        x="Year", y="count", 
-                        title='Σύνολο συμβολαίων ανά έτος απο το 2020 έως 2023',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'count':'Σύνολο συμβολαίων','Year':'Έτος'},width=500,text_auto=True)
-        fig_line_polcou.update_traces(textfont_size=17, textangle=0, 
-                                      textposition="outside", cliponaxis=False)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=15)
-        st.write(fig_line_polcou)
-        
-        fig_line_polcou = px.line(prod_line_by_month_count, 
-                        x="Month_Year", y="count", 
-                        title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'count':'Σύνολο συμβολαίων','Month_Year':'Μήνας-Έτος'},markers=True)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_polcou)
+        tabs311,tabs312=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs311:
+            fig_line_polcou = px.bar(prod_line_by_year_count, 
+                            x="Year", y="count", 
+                            title='Σύνολο συμβολαίων ανά έτος απο το 2020 έως 2023',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'Σύνολο συμβολαίων','Year':'Έτος'},width=500,text_auto=True)
+            fig_line_polcou.update_traces(textfont_size=17, textangle=0, 
+                                        textposition="outside", cliponaxis=False)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=15)
+            st.write(fig_line_polcou)
+        with tabs312:
+            plat_count_by_year=All1[["Year","Platform"]].value_counts().reset_index()
+            plat_count_by_year_bar = px.bar(plat_count_by_year, 
+                            x="Year", y="count", color="Platform",barmode="group",
+                            title='Σύνολο συμβολαίων ανά έτος απο το 2020 έως 2023',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'Σύνολο συμβολαίων','Year':'Έτος','Platform':'Πλατφόρμα'},width=900,text_auto=True)
+            plat_count_by_year_bar.update_traces(textfont_size=17, textangle=0, 
+                                        textposition="outside", cliponaxis=False)
+            plat_count_by_year_bar.update_layout(plot_bgcolor='white',font_size=15)
+            st.write(plat_count_by_year_bar)
+        tabs313,tabs314=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs313:  
+            fig_line_polcou = px.line(prod_line_by_month_count, 
+                            x="Month_Year", y="count", 
+                            title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'Σύνολο συμβολαίων','Month_Year':'Μήνας-Έτος'},markers=True)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_polcou)
+        with tabs314:
+            plat_count_by_year=All1[["Month_Year","Platform"]].value_counts().reset_index() 
+            plat_count_by_year['Month_Year']=pd.to_datetime(plat_count_by_year['Month_Year'],format='mixed')
+            plat_count_by_year=plat_count_by_year.sort_values('Month_Year')  
+            fig_line_plat_count_by_year = px.line(plat_count_by_year, 
+                            x="Month_Year", y="count", color='Platform',
+                            title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'Σύνολο συμβολαίων','Month_Year':'Μήνας-Έτος','Platform':'Πλατφόρμα'},markers=True)
+            fig_line_plat_count_by_year.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_plat_count_by_year)
+        tabs315,tabs316=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs315:
+            fig_line_polcou = px.line(prod_line_by_month_mean_count.sort_values('Month'), 
+                            x="Month", y="count", 
+                            title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'Σύνολο συμβολαίων','Month':'Μήνας'},markers=True)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_polcou)
 
-        fig_line_polcou = px.line(prod_line_by_month_mean_count.sort_values('Month'), 
-                        x="Month", y="count", 
-                        title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'count':'Σύνολο συμβολαίων','Month':'Μήνας'},markers=True)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_polcou)
+        with tabs316:
+            
+            plat_count_by_month=All1[["Month_Year","Month","Platform"]].value_counts().reset_index().groupby(["Month","Platform"])['count'].mean().reset_index()
+            plat_count_by_month=plat_count_by_month.sort_values('Month')              
+            fig_line_plat_count_by_month = px.line(plat_count_by_month, 
+                            x="Month", y="count", color='Platform',
+                            title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'Σύνολο συμβολαίων','Month':'Μήνας','Platform':'Πλατφόρμα'},markers=True)
+            fig_line_plat_count_by_month.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_plat_count_by_month)
 
 
-
+    plat_sum_by_year=All1.groupby(["Year","Platform"])[['Net','Commissions']].sum().reset_index()
+    plat_monthyear_sum=All1.groupby(["Month_Year","Platform"])[['Net','Commissions']].sum().reset_index()
+    plat_monthyear_sum['Month_Year']=pd.to_datetime(plat_monthyear_sum['Month_Year'],format='mixed')
+    plat_monthyear_sum=plat_monthyear_sum.sort_values('Month_Year')
+    plat_month_mean=All1.groupby(['Month_Year',"Platform"])[['Net','Commissions']].sum().reset_index()
+    plat_month_mean['Month_Year']=pd.to_datetime(plat_month_mean['Month_Year'],format='mixed')
+    plat_month_mean['Month']=plat_month_mean['Month_Year'].dt.month_name()
+    plat_month_mean['Month'] = pd.Categorical(plat_month_mean['Month'], categories=month_levels)
+    plat_month_mean=plat_month_mean.groupby(["Month",'Platform'])[['Net','Commissions']].mean().reset_index()
+    plat_month_mean=plat_month_mean.sort_values('Month')                    
     with tab32:
-        fig_line_polcou = px.bar(prod_line_by_year, 
-                        x="Year", y="Net", 
-                        title='Καθαρά ασφάλιστρα ανά έτος',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'Net':'Καθαρά €','Year':'Έτος'},width=500,text='Net')
-        fig_line_polcou.update_traces(textfont_size=17,texttemplate = '%{text:.3s} €', textangle=0, textposition="outside", cliponaxis=False)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=15)
-        st.write(fig_line_polcou)
-        fig_line_net = px.line(prod_line_by_month, 
-                        x="Month_Year", y="Net", 
-                        title='Κάθαρα Ασφάλιστρα ανά μήνα ',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'Net':'Καθαρά €','Month_Year':'Μήνας-Έτος'},markers=True)
-        fig_line_net.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_net)
-        fig_line_polcou = px.line(prod_line_by_month_mean.sort_values('Month'), 
-                        x="Month", y="Net", 
-                        title='Μέσος όρος καθαρών ασφαλίστρων ανά μήνα',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'Net':'Καθαρά €','Month':'Μήνας'},markers=True)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_polcou)
-    with tab33:
-        fig_line_polcou = px.bar(prod_line_by_year, 
-                        x="Year", y="Commissions", 
-                        title='Προμήθειες ανά έτος',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'Commissions':'Προμήθειες €','Year':'Έτος'},width=500,text='Commissions')
-        fig_line_polcou.update_traces(textfont_size=17,texttemplate = '%{text:.3s} €', textangle=0, textposition="outside", cliponaxis=False)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=15)
-        st.write(fig_line_polcou)
-        fig_line_com = px.line(prod_line_by_month, 
-                        x="Month_Year", y="Commissions", 
-                        title='Προμήθειες ανά μήνα',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'Commissions':'Προμήθειες €','Month_Year':'Μήνας-Έτος'},markers=True)
-        fig_line_com.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_com)
+        tabs321,tabs322=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs321:
+            fig_line_polcou = px.bar(prod_line_by_year, 
+                            x="Year", y="Net", 
+                            title='Καθαρά ασφάλιστρα ανά έτος',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Net':'Καθαρά €','Year':'Έτος'},width=500,text='Net')
+            fig_line_polcou.update_traces(textfont_size=17,texttemplate = '%{text:.3s} €', textangle=0, textposition="outside", cliponaxis=False)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=15)
+            st.write(fig_line_polcou)
+        with tabs322:
+            plat_sum_by_year_net = px.bar(plat_sum_by_year, 
+                            x="Year", y="Net", color='Platform',barmode='group',
+                            title='Καθαρά ασφάλιστρα ανά έτος',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Net':'Καθαρά €','Year':'Έτος','Platform':'Πλατφόρμα'},width=1000,text='Net')
+            plat_sum_by_year_net.update_traces(textfont_size=17,texttemplate = '%{text:.3s} €', textangle=0, textposition="outside", cliponaxis=False)
+            plat_sum_by_year_net.update_layout(plot_bgcolor='white',font_size=15)
+            st.write(plat_sum_by_year_net)
 
-        fig_line_polcou = px.line(prod_line_by_month_mean.sort_values('Month'), 
-                        x="Month", y="Commissions", 
-                        title='Μέσος όρος προμηθειών ανά μήνα',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'Commissions':'Προμήθειες €','Month':'Μήνας'},markers=True)
-        fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
-        st.write(fig_line_polcou)   
+        tabs323,tabs324=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs323:
+            fig_line_net = px.line(prod_line_by_month, 
+                            x="Month_Year", y="Net", 
+                            title='Κάθαρα Ασφάλιστρα ανά μήνα ',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Net':'Καθαρά €','Month_Year':'Μήνας-Έτος'},markers=True)
+            fig_line_net.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_net)
+        
+        with tabs324:
+            plat_monthyear_sum_net = px.line(plat_monthyear_sum, 
+                            x="Month_Year", y="Net", color='Platform',
+                            title='Κάθαρα Ασφάλιστρα ανά μήνα ',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Net':'Καθαρά €','Month_Year':'Μήνας-Έτος','Platform':'Πλατφόρμα'},markers=True)
+            plat_monthyear_sum_net.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(plat_monthyear_sum_net)
+        
+        tabs325,tabs326=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs325:
+            fig_line_polcou = px.line(prod_line_by_month_mean.sort_values('Month'), 
+                            x="Month", y="Net", 
+                            title='Μέσος όρος καθαρών ασφαλίστρων ανά μήνα',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Net':'Καθαρά €','Month':'Μήνας'},markers=True)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_polcou)
+        with tabs326:
+            plat_month_mean_net = px.line(plat_month_mean, 
+                            x="Month", y="Net", color='Platform',
+                            title='Μέσος όρος καθαρών ασφαλίστρων ανά μήνα',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Net':'Καθαρά €','Month':'Μήνας','Platform':'Πλατφόρμα'},markers=True)
+            plat_month_mean_net.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(plat_month_mean_net)
+
+    with tab33:
+        tabs331,tabs332=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs331:
+            fig_line_polcou = px.bar(prod_line_by_year, 
+                            x="Year", y="Commissions", 
+                            title='Προμήθειες ανά έτος',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Commissions':'Προμήθειες €','Year':'Έτος'},width=500,text='Commissions')
+            fig_line_polcou.update_traces(textfont_size=17,texttemplate = '%{text:.3s} €', textangle=0, textposition="outside", cliponaxis=False)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=15)
+            st.write(fig_line_polcou)
+        with tabs332:
+            plat_sum_by_year_com = px.bar(plat_sum_by_year, 
+                            x="Year", y="Commissions", color='Platform',barmode='group',
+                            title='Προμήθειες ανά έτος',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Commissions':'Προμήθειες €','Year':'Έτος','Platform':'Πλατφόρμα'},width=1000,text='Commissions')
+            plat_sum_by_year_com.update_traces(textfont_size=17,texttemplate = '%{text:.3s} €', textangle=0, textposition="outside", cliponaxis=False)
+            plat_sum_by_year_com.update_layout(plot_bgcolor='white',font_size=15)
+            st.write(plat_sum_by_year_com)
+        tabs333,tabs334=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs333:        
+            fig_line_com = px.line(prod_line_by_month, 
+                            x="Month_Year", y="Commissions", 
+                            title='Προμήθειες ανά μήνα',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Commissions':'Προμήθειες €','Month_Year':'Μήνας-Έτος'},markers=True)
+            fig_line_com.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_com)
+
+        with tabs334:
+            plat_monthyear_sum_com = px.line(plat_monthyear_sum, 
+                            x="Month_Year", y="Commissions", color='Platform',
+                            title='Προμήθειες ανά μήνα ',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Commissions':'Προμήθειες €','Month_Year':'Μήνας-Έτος','Platform':'Πλατφόρμα'},markers=True)
+            plat_monthyear_sum_net.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(plat_monthyear_sum_com)
+        tabs335,tabs336=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+        with tabs335:
+            fig_line_polcou = px.line(prod_line_by_month_mean.sort_values('Month'), 
+                            x="Month", y="Commissions", 
+                            title='Μέσος όρος προμηθειών ανά μήνα',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Commissions':'Προμήθειες €','Month':'Μήνας'},markers=True)
+            fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(fig_line_polcou)
+        with tabs336:
+            plat_month_mean_net = px.line(plat_month_mean, 
+                            x="Month", y="Commissions", color='Platform',
+                            title='Μέσος όρος προμηθειών ανά μήνα',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'Commissions':'Προμήθειες €','Month':'Μήνας','Platform':'Πλατφόρμα'},markers=True)
+            plat_month_mean_net.update_layout(plot_bgcolor='white',font_size=13)
+            st.write(plat_month_mean_net)
+          
 with tab4:
-    st.write("# Νομός")
-    
+    st.write("# Νομός")   
     discrict_data=All1.groupby(['id','District'])[['Gross','Net','Commissions']].sum().reset_index()
     discrict_data_total=All1.groupby(['District'])[['Gross','Net','Commissions']].sum().reset_index()
     discrictcount=discrict_data['District'].value_counts().reset_index().sort_values('count')
@@ -374,35 +487,73 @@ with tab4:
         fig_barplot.update_xaxes(tickprefix="€")
         st.write(fig_barplot_reg)    
 with tab5:
-    select_durations=All1.loc[(All1['Duration']==1)|(All1['Duration']==3)|(All1['Duration']==6)|(All1['Duration']==12)]
-    select_duration_total_year=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Year',"Duration_gr"])['count'].sum().round(1).reset_index()
-    fig_dur_bar = px.bar(select_duration_total_year.loc[select_duration_total_year['Duration_gr']!="Άλλη"], 
-                        x="Year", y="count", 
-                        title='Χρονικές διάρκειες συμβολαίων ανά έτος (Συνολικά)',color='Duration_gr',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'count':'# Συμβολαίων','Year':'Έτος',"Duration_gr":'Διάρκεια συμβολαίου'},
-                        width=700,text='count',height=800)
-    fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
-    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
-    st.write(fig_dur_bar)
 
     select_durations=All1.loc[(All1['Duration']==1)|(All1['Duration']==3)|(All1['Duration']==6)|(All1['Duration']==12)]
-    select_duration_total=select_durations[['Duration_gr','Month']].value_counts().reset_index().sort_values(['Duration_gr','Month'])
-    fig_dur_bar = px.bar(select_duration_total, 
-                        x="Month", y="count", 
-                        title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Συνολικά)',color='Duration_gr',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
-                        width=1000,text='count')
-    fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
-    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
-    st.write(fig_dur_bar)
-    select_duration_mean=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Month',"Duration_gr"])['count'].mean().round(1).reset_index()
-    fig_dur_bar = px.line(select_duration_mean.loc[select_duration_mean['Duration_gr']!="Άλλη"], 
-                        x="Month", y="count", 
-                        title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Μέσος όρος)',color='Duration_gr',
-                        color_discrete_sequence= px.colors.sequential.Aggrnyl,
-                        labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
-                        width=1000,height=1000,markers=True)
-    fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
-    st.write(fig_dur_bar)
+    select_duration_total_year=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Year',"Duration_gr"])['count'].sum().round(1).reset_index()
+    tabs51,tabs52=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+    with tabs51:
+        fig_dur_bar = px.bar(select_duration_total_year.loc[select_duration_total_year['Duration_gr']!="Άλλη"], 
+                            x="Year", y="count", 
+                            title='Χρονικές διάρκειες συμβολαίων ανά έτος (Συνολικά)',color='Duration_gr',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'# Συμβολαίων','Year':'Έτος',"Duration_gr":'Διάρκεια συμβολαίου'},
+                            width=900,text='count',height=800)
+        fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+        fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+        st.write(fig_dur_bar)
+    with tabs52:
+        select_duration_total_year_plat=select_durations[['Duration_gr','Platform','Year']].value_counts().reset_index()
+        fig_dur_bar = px.bar(select_duration_total_year_plat.loc[select_duration_total_year_plat['Duration_gr']!="Άλλη"], 
+                            x="Platform", y="count", facet_col='Year',facet_col_wrap=5,
+                            title='Χρονικές διάρκειες συμβολαίων ανά έτος (Συνολικά)',color='Duration_gr',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'# Συμβολαίων','Year':'Έτος',"Duration_gr":'Διάρκεια συμβολαίου','Platform':'Πλατφόρμα'},
+                            width=1200,text='count',height=1000)
+        fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+        fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+        st.write(fig_dur_bar)       
+    tabs53,tabs54=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+    with tabs53:
+        select_duration_total=select_durations[['Duration_gr','Month']].value_counts().reset_index().sort_values(['Duration_gr','Month'])
+        fig_dur_bar = px.bar(select_duration_total, 
+                            x="Month", y="count", 
+                            title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Συνολικά)',color='Duration_gr',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
+                            width=1000,text='count')
+        fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+        fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+        st.write(fig_dur_bar)
+    with tabs54:        
+        select_duration_total_plat=select_durations[['Duration_gr','Platform','Month']].value_counts().reset_index().sort_values(['Duration_gr','Month'])
+        fig_dur_bar = px.bar(select_duration_total_plat, 
+                            x="Platform", y="count",facet_col='Month',facet_col_wrap=6, 
+                            title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Συνολικά)',color='Duration_gr',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου','Platform':'Πλατφόρμα'},
+                            width=1500,text='count',height=1200)
+        fig_dur_bar.update_traces(textfont_size=17, textangle=0, textposition="outside", cliponaxis=False)
+        fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+        st.write(fig_dur_bar)
+    tabs55,tabs56=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
+    with tabs55:
+        select_duration_mean=(select_durations[['Duration_gr','Month','Year']].value_counts().reset_index()).groupby(['Month',"Duration_gr"])['count'].mean().round(1).reset_index()
+        fig_dur_bar = px.line(select_duration_mean.loc[select_duration_mean['Duration_gr']!="Άλλη"], 
+                            x="Month", y="count", 
+                            title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Μέσος όρος)',color='Duration_gr',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου'},
+                            width=1000,height=1000,markers=True)
+        fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+        st.write(fig_dur_bar)
+    with tabs56:
+        select_duration_mean=(select_durations[['Duration_gr','Month','Platform']].value_counts().reset_index()).groupby(['Month',"Duration_gr",'Platform'])['count'].mean().round(1).reset_index()
+        fig_dur_bar = px.line(select_duration_mean.loc[select_duration_mean['Duration_gr']!="Άλλη"], 
+                            x="Month", y="count",facet_col='Platform', facet_col_wrap=2,
+                            title='Χρονικές διάρκειες συμβολαίων ανά μήνα (Μέσος όρος)',color='Duration_gr',
+                            color_discrete_sequence= px.colors.sequential.Aggrnyl,
+                            labels={'count':'# Συμβολαίων','Month':'Μήνας',"Duration_gr":'Διάρκεια συμβολαίου','Platform':'Πλατφόρμα'},
+                            width=2000,height=1000,markers=True)
+        fig_dur_bar.update_layout(plot_bgcolor='white',font_size=15)
+        st.write(fig_dur_bar)
+
