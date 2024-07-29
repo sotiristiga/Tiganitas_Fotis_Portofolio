@@ -33,6 +33,13 @@ ME['District']=ME['District'].replace("ΛΑΡΙΣΗΣ","ΛΑΡΙΣΑΣ")
 IM['District']=IM['District'].replace("ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑΣ","ΑΙΤΩΛΟΑΚΑΡΝΑΝΙΑ")
 IM['District']=IM['District'].replace("ΔΩΔΕΚΑΝΗΣΟΥ","ΔΩΔΕΚΑΝΗΣΩΝ")
 ME['District']=ME['District'].replace("ΠΕΛΛΑΣ","ΠΕΛΛΗΣ")
+IM['District']=IM['District'].replace("ΔΩΔΕΚΑΝΗΣΟΥ","ΔΩΔΕΚΑΝΗΣΩΝ")
+ME['District']=ME['District'].replace("ΠΕΛΛΑΣ","ΠΕΛΛΗΣ")
+IM['Category']=IM['Category'].replace("ΑΥΤΟΚΙΝΗΤΟ","ΑΥΤΟΚΙΝΗΤΩΝ")
+IM['Category']=IM['Category'].replace("ΠΡΟΣΩΠΙΚΟ ΑΤΥΧΗΜΑ (ΟΧΗΜΑ)","ΠΡΟΣΩΠΙΚΩΝ ΑΤΥΧΗΜΑΤΩΝ")
+IM['Category']=IM['Category'].replace("ΟΔΙΚΗ ΒΟΗΘΕΙΑ","ΟΔΙΚΗΣ ΒΟΗΘΕΙΑΣ")
+IM['Category']=IM['Category'].replace("ΝΟΜΙΚΗ ΠΡΟΣΤΑΣΙΑ","ΝΟΜΙΚΗΣ ΠΡΟΣΤΑΣΙΑΣ")
+IM['Category']=IM['Category'].replace("ΣΚΑΦΗ","ΣΚΑΦΩΝ")
 IM_select=IM[['N_Policy', 'Company', 'Category', 'Char', 'Started', 'Expired','District', 'City', 'Gross', 'Net', 'Commissions', 'id','Platform']]
 
 All=pd.concat([ME,IM_select])
@@ -82,8 +89,10 @@ kpi1.metric(label="Πελάτες 👩👨",
 
 kpi2.metric(label="Συμβόλαια📑",
         value=All1['N_Policy'].nunique())
+
 kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
-        value=All1['Gross'].sum().round(2))
+        value=All1['Net'].sum().round(2))
+
 kpi4.metric(label="Προμήθειες💶",
         value=All1['Commissions'].sum().round(2))
 
@@ -97,7 +106,7 @@ with pie1:
         title='Πελάτες<br>(ανά πλατφόρμα)',hole=0.5,width=150)
     pie1.update_traces(hoverinfo="value",textfont_size=17)
     pie1.update_layout(plot_bgcolor='white',font_size=20,
-                       legend=dict(yanchor="top",y=0.04,xanchor="left",x=0.00005),legend_title_text='Φύλο',title_x=0.1,title_y=0.8)
+                       legend=dict(yanchor="top",y=0.04,xanchor="left",x=0.00005),legend_title_text='Πλατφόρμα',title_x=0.1,title_y=0.8)
     st.write(pie1)
 
 with pie2:
@@ -112,9 +121,9 @@ with pie2:
     st.write(pie2)
 
 with pie3:
-    pie3=px.pie(All.groupby('Platform')['Net'].sum().reset_index(),
+    pie3=px.pie(All1.groupby('Platform')['Net'].sum().reset_index(),
         values='Net',names='Platform', color='Platform',
-        color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'Net':'Καθαρά ασφάλιστρα',
+        color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'Net':'Καθαρά<br>ασφάλιστρα',
                                                             'Platform':'Πλατφόρμα'}, 
         height=350,
         title='Καθαρά<br>ασφάλιστρα <br>(ανά πλατφόρμα)',hole=0.5,width=150)
@@ -124,7 +133,7 @@ with pie3:
     st.write(pie3)
 
 with pie4:
-    pie4=px.pie(All.groupby('Platform')['Commissions'].sum().reset_index(),
+    pie4=px.pie(All1.groupby('Platform')['Commissions'].sum().reset_index(),
         values='Commissions',names='Platform', color='Platform',
         color_discrete_sequence= px.colors.sequential.Viridis_r,labels={'Commissions':'Προμήθειες',
                                                             'Platform':'Πλατφόρμα'}, 
@@ -310,7 +319,7 @@ with tab3:
     prod_line_by_month_mean_count['Month'] = pd.Categorical(prod_line_by_month_mean_count['Month'], categories=month_levels)
     prod_line_by_year=prod_line_by_month.groupby('Year')[['Commissions',"Net"]].sum().reset_index()
     prod_line_by_year_count=prod_line_by_month_count.groupby('Year')['count'].sum().reset_index()
-    prod_line_by_year_count['Year']=pd.Categorical(prod_line_by_year_count['Year'],pd.Series([2020,2021,2022,2023]))
+    prod_line_by_year_count['Year']=pd.Categorical(prod_line_by_year_count['Year'],pd.Series([2015,2016,2017,2018,2019,2020,2021,2022,2023]))
     tab31, tab32, tab33 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
     with tab31:
         tabs311,tabs312=st.tabs(["Σύνολικα","Σύγκριση ανά πλατφόρμα"])
