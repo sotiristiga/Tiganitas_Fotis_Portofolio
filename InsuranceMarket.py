@@ -79,7 +79,7 @@ kpi1.metric(label="Πελάτες 👩👨",
 kpi2.metric(label="Συμβόλαια📑",
         value=IM1['N_Policy'].nunique())
 kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
-        value=IM1['Gross'].sum().round(2))
+        value=IM1['Net'].sum().round(2))
 kpi4.metric(label="Προμήθειες💶",
         value=IM1['Commissions'].sum().round(2))
 
@@ -179,7 +179,7 @@ with tab3:
         
         fig_line_polcou = px.line(prod_line_by_month_count, 
                         x="Month_Year", y="count", 
-                        title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                        title='Σύνολο συμβολαίων ανά μήνα από την έναρξη συνεργασίας',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'count':'Σύνολο συμβολαίων','Month_Year':'Μήνας-Έτος'},markers=True)
         fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
@@ -206,7 +206,7 @@ with tab3:
         st.write(fig_line_polcou)
         fig_line_net = px.line(prod_line_by_month, 
                         x="Month_Year", y="Net", 
-                        title='Κάθαρα Ασφάλιστρα ανά μήνα ',
+                        title='Κάθαρα Ασφάλιστρα ανά μήνα από την έναρξη συνεργασίας',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'Net':'Καθαρά €','Month_Year':'Μήνας-Έτος'},markers=True)
         fig_line_net.update_layout(plot_bgcolor='white',font_size=13)
@@ -229,7 +229,7 @@ with tab3:
         st.write(fig_line_polcou)
         fig_line_com = px.line(prod_line_by_month, 
                         x="Month_Year", y="Commissions", 
-                        title='Προμήθειες ανά μήνα',
+                        title='Προμήθειες ανά μήνα από την έναρξη συνεργασίας',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'Commissions':'Προμήθειες €','Month_Year':'Μήνας-Έτος'},markers=True)
         fig_line_com.update_layout(plot_bgcolor='white',font_size=13)
