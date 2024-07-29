@@ -69,7 +69,7 @@ kpi1.metric(label="Πελάτες 👩👨",
 kpi2.metric(label="Συμβόλαια📑",
         value=ME1['N_Policy'].nunique())
 kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
-        value=ME1['Gross'].sum().round(2))
+        value=ME1['Net'].sum().round(2))
 kpi4.metric(label="Προμήθειες💶",
         value=ME1['Commissions'].sum().round(2))
 
@@ -156,12 +156,12 @@ with tab3:
     prod_line_by_month_mean_count['Month'] = pd.Categorical(prod_line_by_month_mean_count['Month'], categories=month_levels)
     prod_line_by_year=prod_line_by_month.groupby('Year')[['Commissions',"Net"]].sum().reset_index()
     prod_line_by_year_count=prod_line_by_month_count.groupby('Year')['count'].sum().reset_index()
-    prod_line_by_year_count['Year']=pd.Categorical(prod_line_by_year_count['Year'],pd.Series([2020,2021,2022,2023]))
+    prod_line_by_year_count['Year']=pd.Categorical(prod_line_by_year_count['Year'],pd.Series([2015,2016,2017,2018,2019,2020,2021,2022,2023]))
     tab31, tab32, tab33 = st.tabs(["Σύνολο Συμβολαίων", "Καθαρά", "Προμήθειες"])
     with tab31:
         fig_line_polcou = px.bar(prod_line_by_year_count, 
                         x="Year", y="count", 
-                        title='Σύνολο συμβολαίων ανά έτος απο το 2020 έως 2023',
+                        title='Σύνολο συμβολαίων ανά έτος',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'count':'Σύνολο συμβολαίων','Year':'Έτος'},width=500,text_auto=True)
         fig_line_polcou.update_traces(textfont_size=17, textangle=0, 
@@ -171,7 +171,7 @@ with tab3:
         
         fig_line_polcou = px.line(prod_line_by_month_count, 
                         x="Month_Year", y="count", 
-                        title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                        title='Σύνολο συμβολαίων ανά μήνα από την έναρξη συνεργασίας',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'count':'Σύνολο συμβολαίων','Month_Year':'Μήνας-Έτος'},markers=True)
         fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
@@ -179,7 +179,7 @@ with tab3:
 
         fig_line_polcou = px.line(prod_line_by_month_mean_count.sort_values('Month'), 
                         x="Month", y="count", 
-                        title='Σύνολο συμβολαίων ανά μήνα απο το 2020 έως 2023',
+                        title='Σύνολο συμβολαίων ανά μήνα',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'count':'Σύνολο συμβολαίων','Month':'Μήνας'},markers=True)
         fig_line_polcou.update_layout(plot_bgcolor='white',font_size=13)
@@ -198,7 +198,7 @@ with tab3:
         st.write(fig_line_polcou)
         fig_line_net = px.line(prod_line_by_month, 
                         x="Month_Year", y="Net", 
-                        title='Κάθαρα Ασφάλιστρα ανά μήνα ',
+                        title='Κάθαρα Ασφάλιστρα ανά μήνα από την έναρξη συνεργασίας',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'Net':'Καθαρά €','Month_Year':'Μήνας-Έτος'},markers=True)
         fig_line_net.update_layout(plot_bgcolor='white',font_size=13)
@@ -221,7 +221,7 @@ with tab3:
         st.write(fig_line_polcou)
         fig_line_com = px.line(prod_line_by_month, 
                         x="Month_Year", y="Commissions", 
-                        title='Προμήθειες ανά μήνα',
+                        title='Προμήθειες ανά μήνα από την έναρξη συνεργασίας',
                         color_discrete_sequence= px.colors.sequential.Aggrnyl,
                         labels={'Commissions':'Προμήθειες €','Month_Year':'Μήνας-Έτος'},markers=True)
         fig_line_com.update_layout(plot_bgcolor='white',font_size=13)
