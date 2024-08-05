@@ -10,6 +10,23 @@ from math import ceil
 from datetime import date
 from streamlit_dynamic_filters import DynamicFilters
 
+lnk = '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">'
+
+def metrics_customize(red,green,blue,iconname,sline,i):
+
+    htmlstr = f"""<p style='background-color: rgb({red},{green},{blue}, 0.75); 
+                        color: rgb(0,0,0, 0.75); 
+                        font-size: 25px; 
+                        border-radius: 7px; 
+                        padding-left: 12px; 
+                        padding-top: 18px; 
+                        padding-bottom: 18px; 
+                        line-height:25px;'>
+                        <i class='{iconname} fa-xs'></i> {i}
+                        </style><BR><span style='font-size: 22px; 
+                        margin-top: 0;'>{sline}</style></span></p>"""
+    return htmlstr
+
 st.set_page_config(layout='wide',page_title="Insurance Market")
 
 IM_2020= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/IM_2020.csv")
@@ -73,15 +90,21 @@ with st.sidebar:
 
 IM1=dynamic_filters.filter_df()
 
-kpi1, kpi2, kpi3,kpi4 = st.columns(4)
-kpi1.metric(label="Πελάτες 👩👨",
-        value=IM1['id'].nunique())
-kpi2.metric(label="Συμβόλαια📑",
-        value=IM1['N_Policy'].nunique())
-kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
-        value=IM1['Net'].sum().round(2))
-kpi4.metric(label="Προμήθειες💶",
-        value=IM1['Commissions'].sum().round(2))
+kpi1, kpi2, kpi3, kpi4,kpi5 = st.columns(5)
+with kpi1:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-users","Πελάτες",IM1['id'].nunique()), unsafe_allow_html=True)
+
+with kpi2:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-file-contract","Συμβόλαια",IM1['N_Policy'].nunique()), unsafe_allow_html=True)
+
+with kpi3:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-euro-sign","Καθαρά Ασφάλιστρα",IM1['Net'].sum().round(2)), unsafe_allow_html=True)
+with kpi4:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-euro-sign","Προμήθειες",IM1['Commissions'].sum().round(2)), unsafe_allow_html=True)
+
+with kpi5:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-percent","Ποσοστό Προμήθειας",((IM1['Commissions'].sum()/IM1['Net'].sum()).round(3)*100)), unsafe_allow_html=True)
+
 
 tab1, tab2, tab3, tab4,tab5 = st.tabs(["Παραγωγή ανά εταιρεια","Παραγωγή ανά κλάδο", "Εξέλιξη Παραγωγής", "Δημογραφικά Πελατών",'Διάρκειες Συμβολαίων'])
 with tab1:
