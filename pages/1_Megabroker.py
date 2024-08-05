@@ -8,6 +8,23 @@ import plotly.graph_objects as go
 import streamlit as st
 from streamlit_dynamic_filters import DynamicFilters
 
+lnk = '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">'
+
+def metrics_customize(red,green,blue,iconname,sline,i):
+
+    htmlstr = f"""<p style='background-color: rgb({red},{green},{blue}, 0.75); 
+                        color: rgb(0,0,0, 0.75); 
+                        font-size: 25px; 
+                        border-radius: 7px; 
+                        padding-left: 12px; 
+                        padding-top: 18px; 
+                        padding-bottom: 18px; 
+                        line-height:25px;'>
+                        <i class='{iconname} fa-xs'></i> {i}
+                        </style><BR><span style='font-size: 22px; 
+                        margin-top: 0;'>{sline}</style></span></p>"""
+    return htmlstr
+  
 ME_2015_2016= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2015_2016.csv")
 ME_2017= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2017.csv")
 ME_2018= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2018.csv")
@@ -63,15 +80,20 @@ with st.sidebar:
 
 ME1=dynamic_filters.filter_df()
 
-kpi1, kpi2, kpi3,kpi4 = st.columns(4)
-kpi1.metric(label="Πελάτες 👩👨",
-        value=ME1['id'].nunique())
-kpi2.metric(label="Συμβόλαια📑",
-        value=ME1['N_Policy'].nunique())
-kpi3.metric(label="Καθαρά Ασφάλιστρα💶",
-        value=ME1['Net'].sum().round(2))
-kpi4.metric(label="Προμήθειες💶",
-        value=ME1['Commissions'].sum().round(2))
+kpi1, kpi2, kpi3, kpi4,kpi5 = st.columns(5)
+with kpi1:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-users","Πελάτες",ME1['id'].nunique()), unsafe_allow_html=True)
+
+with kpi2:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-file-contract","Συμβόλαια",ME1['N_Policy'].nunique()), unsafe_allow_html=True)
+
+with kpi3:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-euro-sign","Καθαρά Ασφάλιστρα",ME1['Net'].sum().round(2)), unsafe_allow_html=True)
+with kpi4:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-euro-sign","Προμήθειες",ME1['Commissions'].sum().round(2)), unsafe_allow_html=True)
+
+with kpi5:
+    st.markdown(lnk + metrics_customize(0,204,102,"fas fa-percent","Ποσοστό Προμήθειας",((ME1['Commissions'].sum()/ME1['Net'].sum()).round(3)*100)), unsafe_allow_html=True)
 
 
 
