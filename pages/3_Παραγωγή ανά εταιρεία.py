@@ -8,6 +8,9 @@ import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
 from streamlit_dynamic_filters import DynamicFilters
+
+lnk = '<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">'
+
 def metrics_customize(red,green,blue,iconname,sline,i):
 
     htmlstr = f"""<p style='background-color: rgb({red},{green},{blue}, 0.75); 
