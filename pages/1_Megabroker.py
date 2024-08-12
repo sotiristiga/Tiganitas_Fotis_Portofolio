@@ -36,7 +36,7 @@ ME_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_F
 ME_2024= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2024.csv")
 
 
-ME=pd.concat([ME_2015_2016,ME_2017,ME_2018,ME_2019,ME_2020,ME_2021,ME_2022,ME_2023])
+ME=pd.concat([ME_2015_2016,ME_2017,ME_2018,ME_2019,ME_2020,ME_2021,ME_2022,ME_2023,ME_2024])
 ME['Started']=pd.to_datetime(ME['Started'],dayfirst=True)
 ME['Expired']=pd.to_datetime(ME['Expired'],dayfirst=True)
 
