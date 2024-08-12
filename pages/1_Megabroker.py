@@ -33,6 +33,7 @@ ME_2020= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_F
 ME_2021= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2021.csv")
 ME_2022= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2022.csv")
 ME_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2023.csv")
+ME_2024= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/ME_2024.csv")
 
 
 ME=pd.concat([ME_2015_2016,ME_2017,ME_2018,ME_2019,ME_2020,ME_2021,ME_2022,ME_2023])
