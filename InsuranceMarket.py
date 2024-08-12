@@ -36,7 +36,7 @@ IM_2023= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_F
 IM_2024= pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Tiganitas_Fotis_Portofolio/main/IM_2024.csv")
 
 
-IM=pd.concat([IM_2020,IM_2021,IM_2022,IM_2023])
+IM=pd.concat([IM_2020,IM_2021,IM_2022,IM_2023,IM_2024])
 IM['Started']=pd.to_datetime(IM['Started'],dayfirst=True)
 IM['Expired']=pd.to_datetime(IM['Expired'],dayfirst=True)
 
